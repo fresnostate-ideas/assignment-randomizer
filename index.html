@@ -39,7 +39,6 @@
       flex-wrap: wrap;
     }
 
-    /* FIX: removed text-transform uppercase and increased size slightly for readability */
     .course-title {
       font-size: 13px;
       font-weight: 500;
@@ -66,7 +65,6 @@
       color: #3730a3;
     }
 
-    /* FIX: low stakes badge now has a visible border so it's not color-only */
     .badge-stakes {
       background: #f0fdf4;
       color: #166534;
@@ -79,7 +77,6 @@
       border: 1px solid #9a3412;
     }
 
-    /* FIX: promoted to h2 for semantic heading structure */
     .assignment-title {
       font-size: 16px;
       font-weight: 500;
@@ -93,7 +90,6 @@
       color: #444;
     }
 
-    /* FIX: darkened from #888 to #595959 — passes 4.5:1 on white */
     .assignment-type {
       font-size: 12px;
       color: #595959;
@@ -121,7 +117,6 @@
     .btn-next:hover { background: #f0f0f0; }
     .btn-next:active { transform: scale(0.98); }
 
-    /* FIX: visible focus ring for keyboard navigation */
     .btn-next:focus-visible {
       outline: 3px solid #2563eb;
       outline-offset: 3px;
@@ -134,48 +129,11 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* FIX: respect reduced motion preference */
     @media (prefers-reduced-motion: reduce) {
       .fade { animation: none; }
       .btn-next { transition: none; }
     }
-  </style>
-</head>
-<body>
-  <div class="passage-wrap">
 
-    <!--
-      FIX: aria-live="polite" tells screen readers to announce content
-      when it updates. aria-atomic="true" ensures the whole card is
-      read as a unit rather than just the changed fragment.
-    -->
-    <div class="passage-card" id="card" aria-live="polite" aria-atomic="true">
-      <div class="card-header">
-        <!-- FIX: aria-label will be set by JS to give screen readers full context -->
-        <span class="course-title" id="pcourse"></span>
-        <div class="badges" aria-hidden="true">
-          <span class="badge badge-division" id="pdivision"></span>
-          <span class="badge badge-stakes" id="pstakes"></span>
-        </div>
-      </div>
-      <!-- FIX: h2 instead of p for proper heading hierarchy -->
-      <h2 class="assignment-title" id="ptitle"></h2>
-      <p class="passage-text" id="ptext"></p>
-      <!-- FIX: sr-only span provides badge info to screen readers since badges are aria-hidden -->
-      <span class="assignment-type" id="ptype"></span>
-      <span class="sr-only" id="psr"></span>
-    </div>
-
-    <div class="controls">
-      <button class="btn-next" onclick="nextPassage()">
-        Show another assignment
-      </button>
-    </div>
-
-  </div>
-
-  <style>
-    /* Visually hidden but available to screen readers */
     .sr-only {
       position: absolute;
       width: 1px;
@@ -188,6 +146,27 @@
       border: 0;
     }
   </style>
+</head>
+<body>
+  <div class="passage-wrap">
+    <div class="passage-card" id="card" aria-live="polite" aria-atomic="true">
+      <div class="card-header">
+        <span class="course-title" id="pcourse"></span>
+        <div class="badges" aria-hidden="true">
+          <span class="badge badge-division" id="pdivision"></span>
+          <span class="badge badge-stakes" id="pstakes"></span>
+        </div>
+      </div>
+      <h2 class="assignment-title" id="ptitle"></h2>
+      <p class="passage-text" id="ptext"></p>
+      <span class="assignment-type" id="ptype"></span>
+      <span class="sr-only" id="psr"></span>
+    </div>
+
+    <div class="controls">
+      <button class="btn-next" onclick="nextPassage()">Show another assignment</button>
+    </div>
+  </div>
 
   <script>
     const assignments = [
@@ -350,6 +329,46 @@
         type: "Research Paper",
         division: "Upper Division",
         stakes: "High Stakes"
+      },
+      {
+        course: "ENGL 320: Advanced Composition",
+        title: "Revision Memo",
+        text: "After receiving instructor feedback on your first draft, write a 400-word revision memo before submitting your final paper. For each substantive change you made, explain what feedback prompted it, what you changed, and why. Changes that ignore or push back on feedback must also be justified in writing.",
+        type: "Reflective Writing",
+        division: "Upper Division",
+        stakes: "Low Stakes"
+      },
+      {
+        course: "STAT 201: Applied Statistics",
+        title: "Structured vs. Open Data Task",
+        text: "Part A: Using the provided template and step-by-step guide, calculate and interpret three descriptive statistics from a given dataset. Part B: Using a dataset of your choice, identify a question, select your own methods, and present your findings in a one-page summary with no template provided. Submit both parts with a short reflection on which felt harder and why.",
+        type: "Data Analysis",
+        division: "Lower Division",
+        stakes: "Low Stakes"
+      },
+      {
+        course: "COMM 290: Research and Writing for the Media",
+        title: "Multi-Stage Research Project",
+        text: "Over five weeks, complete four required check-ins: a topic proposal, an annotated bibliography of five sources, a drafted argument outline, and a final 1,200-word piece. Each check-in is graded independently. The final piece cannot be submitted without the preceding three.",
+        type: "Research Paper",
+        division: "Lower Division",
+        stakes: "High Stakes"
+      },
+      {
+        course: "PUBL 310: Policy Analysis",
+        title: "Interdependent Group Research Brief",
+        text: "In groups of three, produce a 1,500-word policy brief. Each member owns one section but must formally request information or a handoff from another group member at least twice — documented in a collaboration log submitted alongside the brief. You cannot complete your section without input from your teammates.",
+        type: "Group Work",
+        division: "Upper Division",
+        stakes: "High Stakes"
+      },
+      {
+        course: "EDUC 301: Higher Education and the College Student Experience",
+        title: "Staff Interview and Written Profile",
+        text: "Identify and contact a staff member on campus whose work connects to student success (e.g., financial aid, advising, disability services, food pantry). Request and conduct a 20–30 minute interview, then write a 600-word profile of that person and their role. Submit your interview questions in advance for instructor review, and include a brief reflection on what surprised you about the conversation.",
+        type: "Research & Analysis",
+        division: "Upper Division",
+        stakes: "Low Stakes"
       }
     ];
 
@@ -376,7 +395,6 @@
       stakesEl.textContent = a.stakes;
       stakesEl.className = 'badge badge-stakes' + (a.stakes === 'High Stakes' ? ' high' : '');
 
-      // FIX: provide badge info to screen readers via sr-only text since badges are aria-hidden
       document.getElementById('psr').textContent = a.division + ', ' + a.stakes;
     }
 
