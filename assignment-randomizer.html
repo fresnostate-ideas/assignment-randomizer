@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Assignment Selector</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      padding: 2rem 1rem;
+    }
+
+    .passage-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .passage-card {
+      background: #ffffff;
+      border: 0.5px solid rgba(0,0,0,0.15);
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      min-height: 160px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .course-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: #555;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .badge-division {
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .badge-stakes {
+      background: #f0fdf4;
+      color: #166534;
+    }
+
+    .badge-stakes.high {
+      background: #fff7ed;
+      color: #9a3412;
+    }
+
+    .assignment-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #1a1a1a;
+      line-height: 1.4;
+    }
+
+    .passage-text {
+      font-size: 14px;
+      line-height: 1.75;
+      color: #444;
+    }
+
+    .assignment-type {
+      font-size: 12px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-next {
+      background: transparent;
+      border: 0.5px solid rgba(0,0,0,0.3);
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-next:hover { background: #f5f5f5; }
+    .btn-next:active { transform: scale(0.98); }
+
+    .fade { animation: fadeIn 0.3s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="passage-wrap">
+    <div class="passage-card" id="card">
+      <div class="card-header">
+        <span class="course-title" id="pcourse"></span>
+        <div class="badges">
+          <span class="badge badge-division" id="pdivision"></span>
+          <span class="badge badge-stakes" id="pstakes"></span>
+        </div>
+      </div>
+      <p class="assignment-title" id="ptitle"></p>
+      <p class="passage-text" id="ptext"></p>
+      <span class="assignment-type" id="ptype"></span>
+    </div>
+    <div class="controls">
+      <button class="btn-next" onclick="nextPassage()">Show another assignment</button>
+    </div>
+  </div>
+
+  <script>
+    const assignments = [
+      {
+        course: "ENGL 101: College Writing",
+        title: "Weekly Reading Response",
+        text: "After completing the assigned readings, write a 300–400 word informal response. Describe one idea that surprised or challenged you, explain why, and connect it to something from your own experience or prior knowledge.",
+        type: "Reflective Writing",
+        division: "Lower Division",
+        stakes: "Low Stakes"
+      },
+      {
+        course: "PSYC 202: Introduction to Psychology",
+        title: "Personal Behavior Change Journal",
+        text: "Over three weeks, select one behavior you want to change and track your progress in a weekly journal. Apply at least two psychological concepts from the course (e.g., operant conditioning, self-efficacy) to explain what is working or not working.",
+        type: "Reflective Writing",
+        division: "Lower Division",
+        stakes: "Low Stakes"
+      },
+      {
+        course: "HIST 450: Memory and Trauma in Modern Europe",
+        title: "Primary Source Analysis Essay",
+        text: "Select two primary sources from the course archive and write a 1,500-word comparative analysis. Examine how each source reflects the historical context in which it was produced, and what each reveals about how trauma is remembered and represented.",
+        type: "Research & Analysis",
+        division: "Upper Division",
+        stakes: "High Stakes"
+      },
+      {
+        course: "SOCI 310: Research Methods in the Social Sciences",
+        title: "Survey Design and Pilot Study",
+        text: "Design a 10–15 item survey instrument to investigate a social phenomenon of your choice. Administer it to at least 10 respondents, analyze the results using descriptive statistics, and write a 1,000-word reflection on what you would revise and why.",
+        type: "Data Analysis",
+        division: "Upper Division",
+        stakes: "High Stakes"
+      },
+      {
+        course: "BIOL 220: Ecology and the Environment",
+        title: "Campus Biodiversity Field Report",
+        text: "Conduct two field observation sessions on campus and document plant and animal species using iNaturalist. Submit a written report identifying at least 15 species, their ecological roles, and one campus environmental issue your data illuminates.",
+        type: "Data Analysis",
+        division: "Lower Division",
+        stakes: "Low Stakes"
+      },
+      {
+        course: "COMM 380: Media and Society",
+        title: "Podcast Episode: Media Literacy in Your Community",
+        text: "Produce a 6–8 minute podcast episode in which you interview at least one community member about how they consume and evaluate news. Edit the audio using Audacity or equivalent software and submit with a one-page production reflection.",
+        type: "Creative / Multimedia",
+        division: "Upper Division",
+        stakes: "High Stakes"
+      },
+      {
+        course: "MKTG 101: Principles of Marketing",
+        title: "Infographic: The Marketing Mix",
+        text: "Create a single-page infographic explaining the 4 Ps of marketing as applied to a real brand of your choice. Use a free design tool such as Canva and include at least one cited data source. Submit the file along with a 200-word design rationale.",
+        type: "Creative / Multimedia",
+        division: "Lower Division",
+        stakes: "Low Stakes"
+      },
+      {
+        course: "POLS 425: Comparative Democratic Systems",
+        title: "Capstone Research Paper",
+        text: "Write a 4,000-word research paper comparing democratic backsliding in two countries of your choice. Your argument must engage with at least eight peer-reviewed sources and propose a theoretical framework for explaining the cases you select.",
+        type: "Research Paper",
+        division: "Upper Division",
+        stakes: "High Stakes"
+      },
+      {
+        course: "EDUC 215: Child Development",
+        title: "Observation and Reflection: Child at Play",
+        text: "Observe a child between ages 4 and 8 during unstructured play for at least 30 minutes. Write a 500-word narrative observation followed by a 300-word reflection connecting what you observed to at least two developmental theories from the course.",
+        type: "Reflective Writing",
+        division: "Lower Division",
+        stakes: "Low Stakes"
+      },
+      {
+        course: "BUSN 320: Organizational Behavior",
+        title: "Group Case Study Presentation",
+        text: "In groups of 4–5, analyze a provided organizational case using frameworks from the course (e.g., motivation theory, group dynamics, leadership styles). Present your findings in a 15-minute live presentation and submit a group reflection on your collaborative process.",
+        type: "Group Work",
+        division: "Upper Division",
+        stakes: "High Stakes"
+      },
+      {
+        course: "CS 150: Introduction to Programming",
+        title: "Debugging Partner Activity",
+        text: "Exchange your Week 4 code assignment with a classmate. Identify at least two bugs in their code, document your findings in a short written report, and meet for 15 minutes to discuss. Submit both the report and a reflection on what you learned from reviewing someone else's work.",
+        type: "Group Work",
+        division: "Lower Division",
+        stakes: "Low Stakes"
+      },
+      {
+        course: "ANTH 340: Medical Anthropology",
+        title: "Ethnographic Interview and Analysis",
+        text: "Conduct a 30–45 minute recorded interview with someone about their experience navigating a healthcare system. Transcribe a 5-minute excerpt and write a 1,200-word analysis applying at least two theoretical concepts from the course.",
+        type: "Research & Analysis",
+        division: "Upper Division",
+        stakes: "High Stakes"
+      },
+      {
+        course: "ART 110: Visual Thinking",
+        title: "Concept-to-Image Sketchbook",
+        text: "Choose one abstract concept discussed in class (e.g., power, belonging, fragility) and create five distinct visual interpretations using different media (pencil, collage, digital, etc.). Submit with a brief written statement for each image explaining your creative choices.",
+        type: "Creative / Multimedia",
+        division: "Lower Division",
+        stakes: "Low Stakes"
+      },
+      {
+        course: "ECON 410: Labor Economics",
+        title: "Wage Gap Data Analysis",
+        text: "Using the provided Current Population Survey dataset, analyze wage differences across at least two demographic variables. Run regression models in R or Stata, interpret the coefficients in plain language, and write a 1,500-word report situating your findings within the existing literature.",
+        type: "Data Analysis",
+        division: "Upper Division",
+        stakes: "High Stakes"
+      },
+      {
+        course: "NURS 101: Foundations of Nursing Practice",
+        title: "Clinical Reflection: First Patient Interaction",
+        text: "Following your first supervised clinical encounter, write a 400-word structured reflection using the Gibbs Reflective Cycle. Describe what happened, how you felt, what went well, and what you would do differently to improve patient-centered communication.",
+        type: "Reflective Writing",
+        division: "Lower Division",
+        stakes: "Low Stakes"
+      },
+      {
+        course: "FILM 360: Documentary Filmmaking",
+        title: "Short Documentary: Place and Memory",
+        text: "Produce a 4–6 minute documentary exploring how a specific place holds personal or community memory. Submit the final video along with a production journal documenting your conceptual decisions, shooting challenges, and editing process.",
+        type: "Creative / Multimedia",
+        division: "Upper Division",
+        stakes: "High Stakes"
+      },
+      {
+        course: "PHIL 200: Ethics",
+        title: "Ethical Dilemma Position Paper",
+        text: "Select one contemporary ethical dilemma from the provided list and write a 700-word position paper defending a clear stance. Apply at least one ethical framework from the course (utilitarian, deontological, or virtue ethics) and address the strongest counterargument to your position.",
+        type: "Research & Analysis",
+        division: "Lower Division",
+        stakes: "Low Stakes"
+      },
+      {
+        course: "PUBL 480: Community Health Program Planning",
+        title: "Collaborative Program Proposal",
+        text: "In teams of 3–4, develop a full program proposal for a community health intervention targeting a population of your choice. The proposal must include a needs assessment, logic model, implementation timeline, evaluation plan, and budget narrative. Present to a panel of community stakeholders.",
+        type: "Group Work",
+        division: "Upper Division",
+        stakes: "High Stakes"
+      },
+      {
+        course: "GEOG 250: Urban Geography",
+        title: "Neighborhood Change Story Map",
+        text: "Using ArcGIS StoryMaps (free with your university login), create a digital story map documenting demographic or land-use change in a neighborhood of your choosing over the past 20 years. Incorporate at least three data sources and write 400 words of interpretive narrative.",
+        type: "Creative / Multimedia",
+        division: "Lower Division",
+        stakes: "Low Stakes"
+      },
+      {
+        course: "MGMT 495: Strategic Management",
+        title: "Industry Analysis and Strategic Recommendation",
+        text: "Select a publicly traded company and conduct a full strategic analysis including PESTEL, Porter's Five Forces, and SWOT frameworks. Write a 3,000-word report concluding with a set of strategic recommendations supported by financial data and industry research.",
+        type: "Research Paper",
+        division: "Upper Division",
+        stakes: "High Stakes"
+      }
+    ];
+
+    let lastIndex = -1;
+
+    function nextPassage() {
+      let idx;
+      do { idx = Math.floor(Math.random() * assignments.length); } while (idx === lastIndex && assignments.length > 1);
+      lastIndex = idx;
+      const a = assignments[idx];
+      const card = document.getElementById('card');
+      card.classList.remove('fade');
+      void card.offsetWidth;
+      card.classList.add('fade');
+      document.getElementById('pcourse').textContent = a.course;
+      document.getElementById('ptitle').textContent = a.title;
+      document.getElementById('ptext').textContent = a.text;
+      document.getElementById('ptype').textContent = a.type;
+      document.getElementById('pdivision').textContent = a.division;
+      const stakesEl = document.getElementById('pstakes');
+      stakesEl.textContent = a.stakes;
+      stakesEl.className = 'badge badge-stakes' + (a.stakes === 'High Stakes' ? ' high' : '');
+    }
+
+    nextPassage();
+  </script>
+</body>
+</html>
