@@ -39,42 +39,6 @@
       font-weight: 500;
     }
 
-    /* ── Mode toggle ── */
-    .mode-toggle {
-      display: flex;
-      gap: 0;
-      margin-bottom: 1.25rem;
-      border: 1px solid rgba(0,0,0,0.2);
-      border-radius: 8px;
-      overflow: hidden;
-      width: fit-content;
-    }
-
-    .mode-btn {
-      background: transparent;
-      border: none;
-      padding: 8px 18px;
-      font-size: 13px;
-      font-weight: 500;
-      color: #595959;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-    }
-
-    .mode-btn:first-child {
-      border-right: 1px solid rgba(0,0,0,0.2);
-    }
-
-    .mode-btn.active {
-      background: #1a1a1a;
-      color: #ffffff;
-    }
-
-    .mode-btn:focus-visible {
-      outline: 3px solid #2563eb;
-      outline-offset: 2px;
-    }
-
     /* ── Section label ── */
     .section-label {
       font-size: 12px;
@@ -82,85 +46,6 @@
       color: #888;
       letter-spacing: 0.05em;
       margin-bottom: 0.75rem;
-    }
-
-    /* ── Generate form ── */
-    .generate-form {
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 1rem;
-      padding: 1.25rem 1.4rem;
-      border: 0.5px solid rgba(0,0,0,0.15);
-      border-radius: 12px;
-      background: #fafafa;
-    }
-
-    .generate-form.visible { display: flex; }
-
-    .form-row {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .form-row label {
-      font-size: 12px;
-      font-weight: 500;
-      color: #444;
-    }
-
-    .form-row input[type="text"] {
-      width: 100%;
-      padding: 8px 10px;
-      font-size: 14px;
-      border: 1px solid rgba(0,0,0,0.2);
-      border-radius: 6px;
-      background: #ffffff;
-      color: #1a1a1a;
-      font-family: inherit;
-    }
-
-    .form-row input[type="text"]:focus {
-      outline: 3px solid #2563eb;
-      outline-offset: 0;
-      border-color: transparent;
-    }
-
-    .form-selects {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .form-selects select {
-      width: 100%;
-      padding: 8px 10px;
-      font-size: 13px;
-      border: 1px solid rgba(0,0,0,0.2);
-      border-radius: 6px;
-      background: #ffffff;
-      color: #1a1a1a;
-      font-family: inherit;
-      cursor: pointer;
-    }
-
-    .form-selects select:focus {
-      outline: 3px solid #2563eb;
-      outline-offset: 0;
-      border-color: transparent;
-    }
-
-    .form-selects .select-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .form-selects .select-wrap label {
-      font-size: 12px;
-      font-weight: 500;
-      color: #444;
     }
 
     /* ── Assignment card ── */
@@ -174,7 +59,6 @@
       flex-direction: column;
       gap: 10px;
       margin-bottom: 1rem;
-      position: relative;
     }
 
     .card-header {
@@ -223,12 +107,6 @@
       border: 1px solid #9a3412;
     }
 
-    .badge-type {
-      background: #f5f3ff;
-      color: #5b21b6;
-      border: 1px solid #5b21b6;
-    }
-
     .assignment-title {
       font-size: 16px;
       font-weight: 500;
@@ -247,42 +125,6 @@
       color: #595959;
       margin-top: 2px;
     }
-
-    /* ── Loading state ── */
-    .loading-indicator {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      color: #595959;
-      padding: 0.5rem 0;
-    }
-
-    .loading-indicator.visible { display: flex; }
-
-    .spinner {
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(0,0,0,0.1);
-      border-top-color: #1a1a1a;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      flex-shrink: 0;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .error-msg {
-      display: none;
-      font-size: 13px;
-      color: #9a3412;
-      background: #fff7ed;
-      border: 1px solid #9a3412;
-      border-radius: 6px;
-      padding: 8px 12px;
-    }
-
-    .error-msg.visible { display: block; }
 
     /* ── Profile grid ── */
     .profiles {
@@ -342,11 +184,9 @@
     .controls {
       display: flex;
       align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
     }
 
-    .btn-action {
+    .btn-next {
       background: transparent;
       border: 1px solid rgba(0,0,0,0.35);
       border-radius: 8px;
@@ -359,11 +199,10 @@
       font-family: inherit;
     }
 
-    .btn-action:hover { background: #f0f0f0; }
-    .btn-action:active { transform: scale(0.98); }
-    .btn-action:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+    .btn-next:hover { background: #f0f0f0; }
+    .btn-next:active { transform: scale(0.98); }
 
-    .btn-action:focus-visible {
+    .btn-next:focus-visible {
       outline: 3px solid #2563eb;
       outline-offset: 3px;
     }
@@ -377,13 +216,12 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .fade, .spinner { animation: none; }
-      .btn-action { transition: none; }
+      .fade { animation: none; }
+      .btn-next { transition: none; }
     }
 
     @media (max-width: 580px) {
       .profiles { grid-template-columns: 1fr; }
-      .form-selects { grid-template-columns: 1fr; }
     }
 
     .sr-only {
@@ -404,62 +242,17 @@
 
     <!-- Reflection prompt -->
     <div class="reflection" role="note" aria-label="Reflection prompt">
-      <p><strong>Instructions: </strong>Consider the assignment and jagged learner profiles below. Which of these students would perform best on the assignment? Where would each struggle? What assumptions does the assignment make about student skills? What knowledge or abilities might students need that the course hasn't explicitly taught? What supports would help each student succeed?</p>
+      <p><strong>Reflection: </strong>Consider the assignment and jagged learner profiles below. Which of these students would perform best on the assignment? Where would each struggle? What assumptions does the assignment make about student skills? What knowledge or abilities might students need that the course hasn't explicitly taught? What supports would help each student succeed?</p>
     </div>
 
-    <!-- Mode toggle -->
-    <div class="mode-toggle" role="group" aria-label="Assignment source">
-      <button class="mode-btn active" id="btn-random" onclick="setMode('random')" aria-pressed="true">Random assignment</button>
-      <button class="mode-btn" id="btn-generate" onclick="setMode('generate')" aria-pressed="false">Generate my own</button>
-    </div>
+    <!-- Assignment -->
+    <p class="section-label" aria-hidden="true">Sample assignment</p>
 
-    <!-- Generate form (shown in generate mode) -->
-    <div class="generate-form" id="generate-form" aria-label="Assignment generator">
-      <div class="form-row">
-        <label for="course-input">Course title</label>
-        <input type="text" id="course-input" placeholder="e.g. HIST 301: The American Civil War" maxlength="120" />
-      </div>
-      <div class="form-selects">
-        <div class="select-wrap">
-          <label for="sel-division">Level</label>
-          <select id="sel-division">
-            <option value="Lower Division">Lower Division</option>
-            <option value="Upper Division">Upper Division</option>
-            <option value="General Education">General Education</option>
-            <option value="Graduate">Graduate</option>
-          </select>
-        </div>
-        <div class="select-wrap">
-          <label for="sel-type">Assignment type</label>
-          <select id="sel-type">
-            <option value="Reflective Writing">Reflective Writing</option>
-            <option value="Research Paper">Research Paper</option>
-            <option value="Research & Analysis">Research &amp; Analysis</option>
-            <option value="Data Analysis">Data Analysis</option>
-            <option value="Creative / Multimedia">Creative / Multimedia</option>
-            <option value="Group Work">Group Work</option>
-          </select>
-        </div>
-        <div class="select-wrap">
-          <label for="sel-stakes">Stakes</label>
-          <select id="sel-stakes">
-            <option value="Low Stakes">Low Stakes</option>
-            <option value="High Stakes">High Stakes</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- Section label -->
-    <p class="section-label" aria-hidden="true" id="assignment-label">Sample assignment</p>
-
-    <!-- Assignment card -->
     <div class="passage-card" id="card" aria-live="polite" aria-atomic="true">
       <div class="card-header">
         <span class="course-title" id="pcourse"></span>
         <div class="badges" aria-hidden="true">
           <span class="badge badge-division" id="pdivision"></span>
-          <span class="badge badge-type" id="ptype-badge" style="display:none"></span>
           <span class="badge badge-stakes" id="pstakes"></span>
         </div>
       </div>
@@ -468,13 +261,6 @@
       <span class="assignment-type" id="ptype"></span>
       <span class="sr-only" id="psr"></span>
     </div>
-
-    <!-- Loading / error -->
-    <div class="loading-indicator" id="loading" aria-live="polite" aria-label="Generating assignment">
-      <div class="spinner" aria-hidden="true"></div>
-      <span>Generating assignment…</span>
-    </div>
-    <div class="error-msg" id="error-msg" role="alert"></div>
 
     <!-- Student profiles -->
     <div class="profiles" id="profiles-grid" role="list" aria-live="polite" aria-atomic="true">
@@ -497,15 +283,13 @@
 
     <!-- Controls -->
     <div class="controls">
-      <button class="btn-action" id="btn-cycle" onclick="handleAction()">New students &amp; assignment</button>
+      <button class="btn-next" onclick="nextCycle()">New students &amp; assignment</button>
     </div>
 
   </div>
 
   <script>
-    /* ═══════════════════════════════════════════════════════════════
-       PROFILE SETS
-    ═══════════════════════════════════════════════════════════════ */
+    /* ── PROFILE SETS ── */
     const profileSets = [
       {
         a: { name: "The Polished Writer", traits: ["Strong writer", "Comfortable with academic language", "Struggles to revise and use feedback", "Prefers papers and exams", "Less comfortable with personal disclosure"] },
@@ -549,9 +333,7 @@
       }
     ];
 
-    /* ═══════════════════════════════════════════════════════════════
-       ASSIGNMENTS (random pool)
-    ═══════════════════════════════════════════════════════════════ */
+    /* ── ASSIGNMENTS ── */
     const assignments = [
       { course: "ENGL 101: College Writing", title: "Weekly Reading Response", text: "After completing the assigned readings, write a 300–400 word informal response. Describe one idea that surprised or challenged you, explain why, and connect it to something from your own experience or prior knowledge.", type: "Reflective Writing", division: "Lower Division", stakes: "Low Stakes" },
       { course: "PSYC 202: Introduction to Psychology", title: "Personal Behavior Change Journal", text: "Over three weeks, select one behavior you want to change and track your progress in a weekly journal. Apply at least two psychological concepts from the course (e.g., operant conditioning, self-efficacy) to explain what is working or not working.", type: "Reflective Writing", division: "Lower Division", stakes: "Low Stakes" },
@@ -580,16 +362,11 @@
       { course: "EDUC 301: Higher Education and the College Student Experience", title: "Staff Interview and Written Profile", text: "Identify and contact a staff member on campus whose work connects to student success (e.g., financial aid, advising, disability services, food pantry). Request and conduct a 20–30 minute interview, then write a 600-word profile of that person and their role. Submit your interview questions in advance for instructor review, and include a brief reflection on what surprised you about the conversation.", type: "Research & Analysis", division: "Upper Division", stakes: "Low Stakes" }
     ];
 
-    /* ═══════════════════════════════════════════════════════════════
-       STATE
-    ═══════════════════════════════════════════════════════════════ */
-    let currentMode = 'random';
+    /* ── STATE ── */
     let lastProfileIdx = -1;
     let lastAssignmentIdx = -1;
 
-    /* ═══════════════════════════════════════════════════════════════
-       HELPERS
-    ═══════════════════════════════════════════════════════════════ */
+    /* ── HELPERS ── */
     function pickDifferent(pool, last) {
       let idx;
       do { idx = Math.floor(Math.random() * pool.length); } while (idx === last && pool.length > 1);
@@ -613,10 +390,12 @@
       el.classList.add('fade');
     }
 
-    function renderProfiles() {
+    /* ── MAIN CYCLE ── */
+    function nextCycle() {
       const pi = pickDifferent(profileSets, lastProfileIdx);
       lastProfileIdx = pi;
       const set = profileSets[pi];
+
       animateEl('profiles-grid');
       document.getElementById('name-a').textContent = set.a.name;
       document.getElementById('name-b').textContent = set.b.name;
@@ -624,165 +403,27 @@
       renderTraits('traits-a', set.a.traits);
       renderTraits('traits-b', set.b.traits);
       renderTraits('traits-c', set.c.traits);
-    }
 
-    function renderAssignmentCard(data) {
-      animateEl('card');
-      document.getElementById('pcourse').textContent = data.course;
-      document.getElementById('ptitle').textContent = data.title;
-      document.getElementById('ptext').textContent = data.text;
-      document.getElementById('ptype').textContent = data.type;
-      document.getElementById('pdivision').textContent = data.division;
-
-      const stakesEl = document.getElementById('pstakes');
-      stakesEl.textContent = data.stakes;
-      stakesEl.className = 'badge badge-stakes' + (data.stakes === 'High Stakes' ? ' high' : '');
-
-      const typeBadge = document.getElementById('ptype-badge');
-      if (currentMode === 'generate') {
-        typeBadge.textContent = data.type;
-        typeBadge.style.display = '';
-      } else {
-        typeBadge.style.display = 'none';
-      }
-
-      document.getElementById('psr').textContent = data.division + ', ' + data.stakes;
-    }
-
-    function setLoading(on) {
-      document.getElementById('loading').classList.toggle('visible', on);
-      document.getElementById('btn-cycle').disabled = on;
-      document.getElementById('card').style.opacity = on ? '0.4' : '1';
-    }
-
-    function showError(msg) {
-      const el = document.getElementById('error-msg');
-      el.textContent = msg;
-      el.classList.add('visible');
-    }
-
-    function clearError() {
-      const el = document.getElementById('error-msg');
-      el.textContent = '';
-      el.classList.remove('visible');
-    }
-
-    /* ═══════════════════════════════════════════════════════════════
-       MODE SWITCHING
-    ═══════════════════════════════════════════════════════════════ */
-    function setMode(mode) {
-      currentMode = mode;
-      const isGenerate = mode === 'generate';
-
-      document.getElementById('btn-random').classList.toggle('active', !isGenerate);
-      document.getElementById('btn-random').setAttribute('aria-pressed', String(!isGenerate));
-      document.getElementById('btn-generate').classList.toggle('active', isGenerate);
-      document.getElementById('btn-generate').setAttribute('aria-pressed', String(isGenerate));
-
-      document.getElementById('generate-form').classList.toggle('visible', isGenerate);
-      document.getElementById('btn-cycle').textContent = isGenerate
-        ? 'Generate assignment'
-        : 'New students \u0026 assignment';
-
-      clearError();
-    }
-
-    /* ═══════════════════════════════════════════════════════════════
-       RANDOM CYCLE
-    ═══════════════════════════════════════════════════════════════ */
-    function runRandomCycle() {
       const ai = pickDifferent(assignments, lastAssignmentIdx);
       lastAssignmentIdx = ai;
-      renderAssignmentCard(assignments[ai]);
-      renderProfiles();
-    }
+      const a = assignments[ai];
 
-    /* ═══════════════════════════════════════════════════════════════
-       AI GENERATION
-    ═══════════════════════════════════════════════════════════════ */
-    async function runGenerateCycle() {
-      clearError();
+      animateEl('card');
+      document.getElementById('pcourse').textContent = a.course;
+      document.getElementById('ptitle').textContent = a.title;
+      document.getElementById('ptext').textContent = a.text;
+      document.getElementById('ptype').textContent = a.type;
+      document.getElementById('pdivision').textContent = a.division;
 
-      const courseInput = document.getElementById('course-input').value.trim();
-      if (!courseInput) {
-        showError('Please enter a course title before generating.');
-        document.getElementById('course-input').focus();
-        return;
-      }
+      const stakesEl = document.getElementById('pstakes');
+      stakesEl.textContent = a.stakes;
+      stakesEl.className = 'badge badge-stakes' + (a.stakes === 'High Stakes' ? ' high' : '');
 
-      const division = document.getElementById('sel-division').value;
-      const type = document.getElementById('sel-type').value;
-      const stakes = document.getElementById('sel-stakes').value;
-
-      setLoading(true);
-
-      const prompt = `You are an instructional designer creating realistic higher education assignment prompts.
-
-Generate a single assignment for the following course. Return ONLY a JSON object with no markdown, no explanation, and no code fences — just the raw JSON.
-
-Course: ${courseInput}
-Level: ${division}
-Assignment type: ${type}
-Stakes: ${stakes}
-
-The JSON must have exactly these fields:
-{
-  "title": "A specific, descriptive assignment title",
-  "text": "2-4 sentences of clear assignment instructions written directly to the student. Be concrete about deliverables, length or duration, and any key requirements. Do not use bullet points."
-}
-
-Keep the title under 10 words. Make the assignment feel authentic and discipline-appropriate.`;
-
-      try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 1000,
-            messages: [{ role: 'user', content: prompt }]
-          })
-        });
-
-        if (!response.ok) throw new Error('API request failed.');
-
-        const data = await response.json();
-        const raw = data.content.map(b => b.text || '').join('').trim();
-        const clean = raw.replace(/```json|```/g, '').trim();
-        const parsed = JSON.parse(clean);
-
-        renderAssignmentCard({
-          course: courseInput,
-          title: parsed.title,
-          text: parsed.text,
-          type: type,
-          division: division,
-          stakes: stakes
-        });
-
-        renderProfiles();
-
-      } catch (err) {
-        showError('Something went wrong generating the assignment. Please try again.');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    /* ═══════════════════════════════════════════════════════════════
-       DISPATCH
-    ═══════════════════════════════════════════════════════════════ */
-    function handleAction() {
-      if (currentMode === 'random') {
-        runRandomCycle();
-      } else {
-        runGenerateCycle();
-      }
+      document.getElementById('psr').textContent = a.division + ', ' + a.stakes;
     }
 
     /* ── Init ── */
-    runRandomCycle();
+    nextCycle();
   </script>
 </body>
 </html>
