@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Random Assignment Selector</title>
+  <title>Three Students, One Assignment</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -11,19 +11,122 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: #ffffff;
       color: #1a1a1a;
-      padding: 2rem 1rem;
+      padding: 2rem 1rem 3rem;
     }
 
-    .passage-wrap {
-      max-width: 680px;
+    .widget {
+      max-width: 860px;
       margin: 0 auto;
     }
 
+    /* ── Header ── */
+    .widget-header {
+      margin-bottom: 1.75rem;
+    }
+
+    .widget-header h1 {
+      font-size: 22px;
+      font-weight: 500;
+      color: #1a1a1a;
+      line-height: 1.3;
+      margin-bottom: 0.25rem;
+    }
+
+    .widget-header p {
+      font-size: 14px;
+      color: #595959;
+      line-height: 1.6;
+    }
+
+    /* ── Profile grid ── */
+    .profiles {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 0.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-card {
+      background: #f4f6f8;
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+    }
+
+    .profile-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: #888;
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+    }
+
+    .profile-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+      margin-bottom: 0.6rem;
+    }
+
+    .profile-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .profile-card li {
+      font-size: 13px;
+      color: #444;
+      line-height: 1.45;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .profile-card li::before {
+      content: "·";
+      position: absolute;
+      left: 0;
+      color: #999;
+      font-size: 16px;
+      line-height: 1.1;
+    }
+
+    /* ── Reflection prompt ── */
+    .reflection {
+      background: #fffbeb;
+      border-left: 3px solid #d97706;
+      border-radius: 0 8px 8px 0;
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .reflection p {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: #444;
+    }
+
+    .reflection strong {
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #888;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── Assignment card ── */
     .passage-card {
       background: #ffffff;
       border: 0.5px solid rgba(0,0,0,0.15);
       border-radius: 12px;
-      padding: 1.5rem 1.75rem;
+      padding: 1.4rem 1.6rem;
       min-height: 160px;
       display: flex;
       flex-direction: column;
@@ -93,13 +196,14 @@
     .assignment-type {
       font-size: 12px;
       color: #595959;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
+    /* ── Controls ── */
     .controls {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
     .btn-next {
@@ -122,16 +226,21 @@
       outline-offset: 3px;
     }
 
+    /* ── Animation ── */
     .fade { animation: fadeIn 0.3s ease; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(4px); }
-      to   { opacity: 1; transform: translateY(0); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .fade { animation: none; }
       .btn-next { transition: none; }
+    }
+
+    @media (max-width: 580px) {
+      .profiles { grid-template-columns: 1fr; }
     }
 
     .sr-only {
@@ -148,7 +257,17 @@
   </style>
 </head>
 <body>
-  <div class="passage-wrap">
+  <div class="widget">
+
+    <!-- Header -->
+    <div class="widget-header">
+      <h1>Three Students, One Assignment</h1>
+      <p>Each cycle presents a new set of student profiles and a new assignment. Consider how the same task lands differently depending on who is sitting in the seat.</p>
+    </div>
+
+    <!-- Assignment -->
+    <p class="section-label" aria-hidden="true">Sample assignment</p>
+
     <div class="passage-card" id="card" aria-live="polite" aria-atomic="true">
       <div class="card-header">
         <span class="course-title" id="pcourse"></span>
@@ -163,227 +282,292 @@
       <span class="sr-only" id="psr"></span>
     </div>
 
-    <div class="controls">
-      <button class="btn-next" onclick="nextPassage()">Show another assignment</button>
+    <!-- Student profiles (populated by JS) -->
+    <div class="profiles" id="profiles-grid" role="list" aria-live="polite" aria-atomic="true">
+      <div class="profile-card" role="listitem">
+        <p class="profile-label" id="label-a">Student A</p>
+        <p class="profile-name" id="name-a"></p>
+        <ul id="traits-a" aria-label="Student A traits"></ul>
+      </div>
+      <div class="profile-card" role="listitem">
+        <p class="profile-label" id="label-b">Student B</p>
+        <p class="profile-name" id="name-b"></p>
+        <ul id="traits-b" aria-label="Student B traits"></ul>
+      </div>
+      <div class="profile-card" role="listitem">
+        <p class="profile-label" id="label-c">Student C</p>
+        <p class="profile-name" id="name-c"></p>
+        <ul id="traits-c" aria-label="Student C traits"></ul>
+      </div>
     </div>
+
+    <!-- Reflection prompt -->
+    <div class="reflection" role="note" aria-label="Reflection prompt">
+      <p><strong>Reflection: </strong>Consider the assignment above. Which of these students would perform best on it? Where would each struggle? What assumptions does the assignment make about student skills? What knowledge or abilities might students need that the course hasn't explicitly taught? What supports would help each student succeed?</p>
+    </div>
+
+    <div class="controls">
+      <button class="btn-next" onclick="nextCycle()">New students &amp; assignment</button>
+    </div>
+
   </div>
 
   <script>
+    /* ── PROFILE SETS ──────────────────────────────────────────────── */
+    /* Each set has three students. Each student has a label (A/B/C),
+       a descriptive name, and a list of traits.                        */
+
+    const profileSets = [
+      {
+        a: { name: "The Polished Writer", traits: ["Strong writer", "Comfortable with academic language", "Struggles to revise and use feedback", "Prefers papers and exams", "Less comfortable with personal disclosure"] },
+        b: { name: "The Quantitative Thinker", traits: ["Strong with data and formulas", "Struggles to organize ideas in writing", "Hesitant to ask questions", "Prefers clear structure and examples", "Works full time"] },
+        c: { name: "The Digital Native", traits: ["Comfortable with digital and AI tools", "Struggles with academic research", "Prefers to work independently", "Tends to prioritize speed over depth", "Better visual communicator than writer"] }
+      },
+      {
+        a: { name: "The Returning Adult", traits: ["Years of professional experience", "Highly self-motivated", "Rusty on academic citation and formatting", "Prefers applied, real-world tasks", "Balances coursework with family responsibilities"] },
+        b: { name: "The First-Generation Student", traits: ["Strong work ethic and resilience", "Unfamiliar with unwritten academic norms", "Hesitant to visit office hours", "Unclear on what 'a good paper' looks like", "Commutes long distances to campus"] },
+        c: { name: "The High Achiever", traits: ["Excels at meeting explicit criteria", "Struggles when expectations are ambiguous", "Highly grade-motivated", "Less comfortable with creative risk-taking", "Prone to perfectionism and late starts"] }
+      },
+      {
+        a: { name: "The Collaborative Learner", traits: ["Thrives in group settings", "Skilled at facilitation and discussion", "Struggles to work independently for long periods", "Writing is stronger when talking through ideas first", "Energized by peer feedback"] },
+        b: { name: "The Quiet Specialist", traits: ["Deep knowledge in one subject area", "Struggles to connect ideas across disciplines", "Rarely speaks in class but contributes in writing", "Prefers solo work to group assignments", "Reads carefully but writes slowly"] },
+        c: { name: "The Creative Thinker", traits: ["Generates original ideas readily", "Struggles to structure arguments logically", "Prefers open-ended prompts", "Resistant to formulaic formats like five-paragraph essays", "Visual and narrative thinker"] }
+      },
+      {
+        a: { name: "The Transfer Student", traits: ["Credits from a different institution", "Strong content knowledge, variable academic skills", "Uncertain about this institution's expectations", "May have gaps in foundational writing instruction", "Adjusting to a new campus culture"] },
+        b: { name: "The Student Athlete", traits: ["Disciplined and goal-oriented", "Frequently absent for travel and competition", "Works well under pressure and deadlines", "Limited unstructured study time", "Prefers concise, direct instruction"] },
+        c: { name: "The International Student", traits: ["Highly educated in home country", "Writing in a second or third language", "May be unfamiliar with Western argumentation norms", "Strong in technical and quantitative work", "Hesitant to contribute verbally in class"] }
+      },
+      {
+        a: { name: "The Anxious Perfectionist", traits: ["Produces high-quality work when confident", "Frequently asks for extensions", "Struggles to submit work that feels 'unfinished'", "Avoids assignments with subjective grading", "Overthinks open-ended prompts"] },
+        b: { name: "The Disengaged Pragmatist", traits: ["Does the minimum required to pass", "Capable of more than grades suggest", "Responds well to relevance and real-world connection", "Disengages when purpose of a task is unclear", "Often missing from optional activities"] },
+        c: { name: "The Enthusiastic Novice", traits: ["Genuinely curious and eager to learn", "Limited prior knowledge of the subject", "Asks many questions, sometimes off-topic", "Overestimates readiness for complex tasks", "Benefits greatly from worked examples"] }
+      },
+      {
+        a: { name: "The Independent Researcher", traits: ["Comfortable finding and evaluating sources", "Prefers self-directed inquiry over guided tasks", "Strong analytical writer", "Impatient with step-by-step scaffolding", "May overlook collaboration as a learning tool"] },
+        b: { name: "The Oral Communicator", traits: ["Articulate and confident in discussion", "Struggles to translate ideas into written form", "Presentation skills far exceed writing skills", "Prefers to demonstrate understanding verbally", "Avoids written assignments when possible"] },
+        c: { name: "The Structured Learner", traits: ["Follows instructions carefully and completely", "Struggles when given too much creative latitude", "Performs best with rubrics and clear models", "Less comfortable with ambiguous or exploratory tasks", "Reads all course materials before class"] }
+      },
+      {
+        a: { name: "The Student with a Disability", traits: ["Registered with accessibility services", "May have extended time or alternative format accommodations", "Strong conceptual understanding", "Processing speed affects timed or high-pressure tasks", "Self-advocacy skills still developing"] },
+        b: { name: "The Non-Traditional Commuter", traits: ["Older than typical undergraduate", "Motivated by clear career connection", "Limited time on campus between work and family", "Prefers asynchronous and flexible tasks", "Strong life experience but less academic socialization"] },
+        c: { name: "The Undeclared Explorer", traits: ["Sampling courses across many disciplines", "Not yet sure of academic or career direction", "Engaged when topics feel personally relevant", "May lack sustained focus on any one subject", "Benefits from connecting coursework to identity and values"] }
+      },
+      {
+        a: { name: "The Peer Leader", traits: ["Informally mentors classmates", "High social intelligence", "Writing quality varies by topic engagement", "Sometimes over-commits and misses deadlines", "Learns best in community"] },
+        b: { name: "The Reluctant Writer", traits: ["Strong ideas but avoids writing tasks", "History of negative feedback on written work", "Prefers oral exams and demonstrations", "Needs explicit instruction in academic conventions", "Self-confidence in academic settings is low"] },
+        c: { name: "The Pre-Professional", traits: ["Highly focused on career outcomes", "Evaluates every assignment by career relevance", "Strong in applied and clinical settings", "Less interested in theoretical or humanities coursework", "Responds well to professional framing of tasks"] }
+      }
+    ];
+
+    /* ── ASSIGNMENTS ───────────────────────────────────────────────── */
+
     const assignments = [
       {
         course: "ENGL 101: College Writing",
         title: "Weekly Reading Response",
         text: "After completing the assigned readings, write a 300–400 word informal response. Describe one idea that surprised or challenged you, explain why, and connect it to something from your own experience or prior knowledge.",
-        type: "Reflective Writing",
-        division: "Lower Division",
-        stakes: "Low Stakes"
+        type: "Reflective Writing", division: "Lower Division", stakes: "Low Stakes"
       },
       {
         course: "PSYC 202: Introduction to Psychology",
         title: "Personal Behavior Change Journal",
         text: "Over three weeks, select one behavior you want to change and track your progress in a weekly journal. Apply at least two psychological concepts from the course (e.g., operant conditioning, self-efficacy) to explain what is working or not working.",
-        type: "Reflective Writing",
-        division: "Lower Division",
-        stakes: "Low Stakes"
+        type: "Reflective Writing", division: "Lower Division", stakes: "Low Stakes"
       },
       {
         course: "HIST 450: Memory and Trauma in Modern Europe",
         title: "Primary Source Analysis Essay",
         text: "Select two primary sources from the course archive and write a 1,500-word comparative analysis. Examine how each source reflects the historical context in which it was produced, and what each reveals about how trauma is remembered and represented.",
-        type: "Research & Analysis",
-        division: "Upper Division",
-        stakes: "High Stakes"
+        type: "Research & Analysis", division: "Upper Division", stakes: "High Stakes"
       },
       {
         course: "SOCI 310: Research Methods in the Social Sciences",
         title: "Survey Design and Pilot Study",
         text: "Design a 10–15 item survey instrument to investigate a social phenomenon of your choice. Administer it to at least 10 respondents, analyze the results using descriptive statistics, and write a 1,000-word reflection on what you would revise and why.",
-        type: "Data Analysis",
-        division: "Upper Division",
-        stakes: "High Stakes"
+        type: "Data Analysis", division: "Upper Division", stakes: "High Stakes"
       },
       {
         course: "BIOL 220: Ecology and the Environment",
         title: "Campus Biodiversity Field Report",
         text: "Conduct two field observation sessions on campus and document plant and animal species using iNaturalist. Submit a written report identifying at least 15 species, their ecological roles, and one campus environmental issue your data illuminates.",
-        type: "Data Analysis",
-        division: "Lower Division",
-        stakes: "Low Stakes"
+        type: "Data Analysis", division: "Lower Division", stakes: "Low Stakes"
       },
       {
         course: "COMM 380: Media and Society",
         title: "Podcast Episode: Media Literacy in Your Community",
         text: "Produce a 6–8 minute podcast episode in which you interview at least one community member about how they consume and evaluate news. Edit the audio using Audacity or equivalent software and submit with a one-page production reflection.",
-        type: "Creative / Multimedia",
-        division: "Upper Division",
-        stakes: "High Stakes"
+        type: "Creative / Multimedia", division: "Upper Division", stakes: "High Stakes"
       },
       {
         course: "MKTG 101: Principles of Marketing",
         title: "Infographic: The Marketing Mix",
         text: "Create a single-page infographic explaining the 4 Ps of marketing as applied to a real brand of your choice. Use a free design tool such as Canva and include at least one cited data source. Submit the file along with a 200-word design rationale.",
-        type: "Creative / Multimedia",
-        division: "Lower Division",
-        stakes: "Low Stakes"
+        type: "Creative / Multimedia", division: "Lower Division", stakes: "Low Stakes"
       },
       {
         course: "POLS 425: Comparative Democratic Systems",
         title: "Capstone Research Paper",
         text: "Write a 4,000-word research paper comparing democratic backsliding in two countries of your choice. Your argument must engage with at least eight peer-reviewed sources and propose a theoretical framework for explaining the cases you select.",
-        type: "Research Paper",
-        division: "Upper Division",
-        stakes: "High Stakes"
+        type: "Research Paper", division: "Upper Division", stakes: "High Stakes"
       },
       {
         course: "EDUC 215: Child Development",
         title: "Observation and Reflection: Child at Play",
         text: "Observe a child between ages 4 and 8 during unstructured play for at least 30 minutes. Write a 500-word narrative observation followed by a 300-word reflection connecting what you observed to at least two developmental theories from the course.",
-        type: "Reflective Writing",
-        division: "Lower Division",
-        stakes: "Low Stakes"
+        type: "Reflective Writing", division: "Lower Division", stakes: "Low Stakes"
       },
       {
         course: "BUSN 320: Organizational Behavior",
         title: "Group Case Study Presentation",
         text: "In groups of 4–5, analyze a provided organizational case using frameworks from the course (e.g., motivation theory, group dynamics, leadership styles). Present your findings in a 15-minute live presentation and submit a group reflection on your collaborative process.",
-        type: "Group Work",
-        division: "Upper Division",
-        stakes: "High Stakes"
+        type: "Group Work", division: "Upper Division", stakes: "High Stakes"
       },
       {
         course: "CS 150: Introduction to Programming",
         title: "Debugging Partner Activity",
         text: "Exchange your Week 4 code assignment with a classmate. Identify at least two bugs in their code, document your findings in a short written report, and meet for 15 minutes to discuss. Submit both the report and a reflection on what you learned from reviewing someone else's work.",
-        type: "Group Work",
-        division: "Lower Division",
-        stakes: "Low Stakes"
+        type: "Group Work", division: "Lower Division", stakes: "Low Stakes"
       },
       {
         course: "ANTH 340: Medical Anthropology",
         title: "Ethnographic Interview and Analysis",
         text: "Conduct a 30–45 minute recorded interview with someone about their experience navigating a healthcare system. Transcribe a 5-minute excerpt and write a 1,200-word analysis applying at least two theoretical concepts from the course.",
-        type: "Research & Analysis",
-        division: "Upper Division",
-        stakes: "High Stakes"
+        type: "Research & Analysis", division: "Upper Division", stakes: "High Stakes"
       },
       {
         course: "ART 110: Visual Thinking",
         title: "Concept-to-Image Sketchbook",
         text: "Choose one abstract concept discussed in class (e.g., power, belonging, fragility) and create five distinct visual interpretations using different media (pencil, collage, digital, etc.). Submit with a brief written statement for each image explaining your creative choices.",
-        type: "Creative / Multimedia",
-        division: "Lower Division",
-        stakes: "Low Stakes"
+        type: "Creative / Multimedia", division: "Lower Division", stakes: "Low Stakes"
       },
       {
         course: "ECON 410: Labor Economics",
         title: "Wage Gap Data Analysis",
         text: "Using the provided Current Population Survey dataset, analyze wage differences across at least two demographic variables. Run regression models in R or Stata, interpret the coefficients in plain language, and write a 1,500-word report situating your findings within the existing literature.",
-        type: "Data Analysis",
-        division: "Upper Division",
-        stakes: "High Stakes"
+        type: "Data Analysis", division: "Upper Division", stakes: "High Stakes"
       },
       {
         course: "NURS 101: Foundations of Nursing Practice",
         title: "Clinical Reflection: First Patient Interaction",
         text: "Following your first supervised clinical encounter, write a 400-word structured reflection using the Gibbs Reflective Cycle. Describe what happened, how you felt, what went well, and what you would do differently to improve patient-centered communication.",
-        type: "Reflective Writing",
-        division: "Lower Division",
-        stakes: "Low Stakes"
+        type: "Reflective Writing", division: "Lower Division", stakes: "Low Stakes"
       },
       {
         course: "FILM 360: Documentary Filmmaking",
         title: "Short Documentary: Place and Memory",
         text: "Produce a 4–6 minute documentary exploring how a specific place holds personal or community memory. Submit the final video along with a production journal documenting your conceptual decisions, shooting challenges, and editing process.",
-        type: "Creative / Multimedia",
-        division: "Upper Division",
-        stakes: "High Stakes"
+        type: "Creative / Multimedia", division: "Upper Division", stakes: "High Stakes"
       },
       {
         course: "PHIL 200: Ethics",
         title: "Ethical Dilemma Position Paper",
         text: "Select one contemporary ethical dilemma from the provided list and write a 700-word position paper defending a clear stance. Apply at least one ethical framework from the course (utilitarian, deontological, or virtue ethics) and address the strongest counterargument to your position.",
-        type: "Research & Analysis",
-        division: "Lower Division",
-        stakes: "Low Stakes"
+        type: "Research & Analysis", division: "Lower Division", stakes: "Low Stakes"
       },
       {
         course: "PUBL 480: Community Health Program Planning",
         title: "Collaborative Program Proposal",
         text: "In teams of 3–4, develop a full program proposal for a community health intervention targeting a population of your choice. The proposal must include a needs assessment, logic model, implementation timeline, evaluation plan, and budget narrative. Present to a panel of community stakeholders.",
-        type: "Group Work",
-        division: "Upper Division",
-        stakes: "High Stakes"
+        type: "Group Work", division: "Upper Division", stakes: "High Stakes"
       },
       {
         course: "GEOG 250: Urban Geography",
         title: "Neighborhood Change Story Map",
         text: "Using ArcGIS StoryMaps (free with your university login), create a digital story map documenting demographic or land-use change in a neighborhood of your choosing over the past 20 years. Incorporate at least three data sources and write 400 words of interpretive narrative.",
-        type: "Creative / Multimedia",
-        division: "Lower Division",
-        stakes: "Low Stakes"
+        type: "Creative / Multimedia", division: "Lower Division", stakes: "Low Stakes"
       },
       {
         course: "MGMT 495: Strategic Management",
         title: "Industry Analysis and Strategic Recommendation",
         text: "Select a publicly traded company and conduct a full strategic analysis including PESTEL, Porter's Five Forces, and SWOT frameworks. Write a 3,000-word report concluding with a set of strategic recommendations supported by financial data and industry research.",
-        type: "Research Paper",
-        division: "Upper Division",
-        stakes: "High Stakes"
+        type: "Research Paper", division: "Upper Division", stakes: "High Stakes"
       },
       {
         course: "ENGL 320: Advanced Composition",
         title: "Revision Memo",
         text: "After receiving instructor feedback on your first draft, write a 400-word revision memo before submitting your final paper. For each substantive change you made, explain what feedback prompted it, what you changed, and why. Changes that ignore or push back on feedback must also be justified in writing.",
-        type: "Reflective Writing",
-        division: "Upper Division",
-        stakes: "Low Stakes"
+        type: "Reflective Writing", division: "Upper Division", stakes: "Low Stakes"
       },
       {
         course: "STAT 201: Applied Statistics",
         title: "Structured vs. Open Data Task",
         text: "Part A: Using the provided template and step-by-step guide, calculate and interpret three descriptive statistics from a given dataset. Part B: Using a dataset of your choice, identify a question, select your own methods, and present your findings in a one-page summary with no template provided. Submit both parts with a short reflection on which felt harder and why.",
-        type: "Data Analysis",
-        division: "Lower Division",
-        stakes: "Low Stakes"
+        type: "Data Analysis", division: "Lower Division", stakes: "Low Stakes"
       },
       {
         course: "COMM 290: Research and Writing for the Media",
         title: "Multi-Stage Research Project",
         text: "Over five weeks, complete four required check-ins: a topic proposal, an annotated bibliography of five sources, a drafted argument outline, and a final 1,200-word piece. Each check-in is graded independently. The final piece cannot be submitted without the preceding three.",
-        type: "Research Paper",
-        division: "Lower Division",
-        stakes: "High Stakes"
+        type: "Research Paper", division: "Lower Division", stakes: "High Stakes"
       },
       {
         course: "PUBL 310: Policy Analysis",
         title: "Interdependent Group Research Brief",
         text: "In groups of three, produce a 1,500-word policy brief. Each member owns one section but must formally request information or a handoff from another group member at least twice — documented in a collaboration log submitted alongside the brief. You cannot complete your section without input from your teammates.",
-        type: "Group Work",
-        division: "Upper Division",
-        stakes: "High Stakes"
+        type: "Group Work", division: "Upper Division", stakes: "High Stakes"
       },
       {
         course: "EDUC 301: Higher Education and the College Student Experience",
         title: "Staff Interview and Written Profile",
         text: "Identify and contact a staff member on campus whose work connects to student success (e.g., financial aid, advising, disability services, food pantry). Request and conduct a 20–30 minute interview, then write a 600-word profile of that person and their role. Submit your interview questions in advance for instructor review, and include a brief reflection on what surprised you about the conversation.",
-        type: "Research & Analysis",
-        division: "Upper Division",
-        stakes: "Low Stakes"
+        type: "Research & Analysis", division: "Upper Division", stakes: "Low Stakes"
       }
     ];
 
-    let lastIndex = -1;
+    /* ── STATE ─────────────────────────────────────────────────────── */
 
-    function nextPassage() {
+    let lastProfileIdx = -1;
+    let lastAssignmentIdx = -1;
+
+    /* ── HELPERS ───────────────────────────────────────────────────── */
+
+    function pickDifferent(pool, last) {
       let idx;
-      do { idx = Math.floor(Math.random() * assignments.length); } while (idx === lastIndex && assignments.length > 1);
-      lastIndex = idx;
-      const a = assignments[idx];
+      do { idx = Math.floor(Math.random() * pool.length); } while (idx === last && pool.length > 1);
+      return idx;
+    }
 
-      const card = document.getElementById('card');
-      card.classList.remove('fade');
-      void card.offsetWidth;
-      card.classList.add('fade');
+    function renderTraits(ulId, traits) {
+      const ul = document.getElementById(ulId);
+      ul.innerHTML = '';
+      traits.forEach(t => {
+        const li = document.createElement('li');
+        li.textContent = t;
+        ul.appendChild(li);
+      });
+    }
+
+    function animateEl(id) {
+      const el = document.getElementById(id);
+      el.classList.remove('fade');
+      void el.offsetWidth;
+      el.classList.add('fade');
+    }
+
+    /* ── MAIN CYCLE ─────────────────────────────────────────────────── */
+
+    function nextCycle() {
+      /* Profiles */
+      const pi = pickDifferent(profileSets, lastProfileIdx);
+      lastProfileIdx = pi;
+      const set = profileSets[pi];
+
+      animateEl('profiles-grid');
+
+      document.getElementById('name-a').textContent = set.a.name;
+      document.getElementById('name-b').textContent = set.b.name;
+      document.getElementById('name-c').textContent = set.c.name;
+      renderTraits('traits-a', set.a.traits);
+      renderTraits('traits-b', set.b.traits);
+      renderTraits('traits-c', set.c.traits);
+
+      /* Assignment */
+      const ai = pickDifferent(assignments, lastAssignmentIdx);
+      lastAssignmentIdx = ai;
+      const a = assignments[ai];
+
+      animateEl('card');
 
       document.getElementById('pcourse').textContent = a.course;
       document.getElementById('ptitle').textContent = a.title;
@@ -398,7 +582,8 @@
       document.getElementById('psr').textContent = a.division + ', ' + a.stakes;
     }
 
-    nextPassage();
+    /* Load first cycle on page ready */
+    nextCycle();
   </script>
 </body>
 </html>
